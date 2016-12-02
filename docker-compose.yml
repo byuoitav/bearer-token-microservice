@@ -1,0 +1,10 @@
+# This file is meant for use during development, NOT production deployment
+
+bearer-token-microservice:
+    build: .
+    environment:
+        - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+        - AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+        - AWS_BUCKET_ADDRESS=$AWS_BUCKET_ADDRESS
+    restart: always
