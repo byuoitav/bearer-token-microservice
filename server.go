@@ -1,15 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"os/exec"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/jessemillar/health"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -75,23 +76,30 @@ func generateKey() (token, error) {
 
 // dunk takes the new token and puts (dunks) it into the Amazon S3 bucket; three points, field goal, touchdown!
 func dunk(payload token) error {
-	filename := "bearer-token.json"
 
-	bytes, err := json.Marshal(payload)
+	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(filename, bytes, 0644)
+	svc := s3.New(session.New(), &aws.Config{Region: aws.String("us-west-2")})
+	response, err := svc.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String("elasticbeanstalk-us-west-2-194925301021"),
+		Key:    aws.String("bearer-token.json"),
+		Body:   bytes.NewReader(payloadBytes),
+	})
+
 	if err != nil {
 		return err
 	}
 
-	frickinArguments := []string{"s3", "cp", filename, os.Getenv("AWS_BUCKET_ADDRESS")}
-	err = exec.Command("aws", frickinArguments...).Run()
-	if err != nil {
-		return err
-	}
-
+	log.Printf("%+v", response.GoString())
+	/*
+		frickinArguments := []string{"s3", "cp", filename, os.Getenv("AWS_BUCKET_ADDRESS")}
+		err = exec.Command("aws", frickinArguments...).Run()
+		if err != nil {
+			return err
+		}
+	*/
 	return nil
 }
