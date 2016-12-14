@@ -30,8 +30,7 @@ func main() {
 
 	job := cron.New()
 
-	// job.AddFunc("0 0 0 * * *", func() { // Generate a new token every night at midnight
-	job.AddFunc("* * * * * *", func() { // Generate a new token every night at midnight
+	job.AddFunc("0 0 0 * * *", func() { // Generate a new token every night at midnight
 		log.Printf("Running scheduled token generation")
 
 		token, err := generateKey()
