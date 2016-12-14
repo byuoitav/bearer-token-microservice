@@ -16,8 +16,8 @@ import (
 	"github.com/robfig/cron"
 )
 
-type key struct {
-	Key string `json:"key"`
+type token struct {
+	Token string `json:"token"`
 }
 
 func main() {
@@ -30,18 +30,18 @@ func main() {
 
 	job := cron.New()
 
-	// job.AddFunc("0 0 0 * * *", func() { // Generate a new key every night at midnight
-	job.AddFunc("* * * * * *", func() { // Generate a new key every night at midnight
-		log.Printf("Running scheduled key generation")
+	// job.AddFunc("0 0 0 * * *", func() { // Generate a new token every night at midnight
+	job.AddFunc("* * * * * *", func() { // Generate a new token every night at midnight
+		log.Printf("Running scheduled token generation")
 
-		key, err := generateKey()
+		token, err := generateKey()
 		if err != nil {
 			log.Printf("ERROR: " + err.Error())
 			return
 		}
 
-		log.Printf("Dunking key into S3 bucket")
-		err = dunk(key)
+		log.Printf("Dunking token into S3 bucket")
+		err = dunk(token)
 		if err != nil {
 			log.Printf("ERROR: " + err.Error())
 			return
@@ -62,20 +62,20 @@ func main() {
 	router.StartServer(&server)
 }
 
-// generateKey...generates...a new key...um...duh...
-func generateKey() (key, error) {
+// generateKey...generates...a new token...um...duh...
+func generateKey() (token, error) {
 	bytes := make([]byte, 1024)
 
 	_, err := rand.Read(bytes)
 	if err != nil {
-		return key{}, err
+		return token{}, err
 	}
 
-	return key{base64.URLEncoding.EncodeToString(bytes)}, nil
+	return token{base64.URLEncoding.EncodeToString(bytes)}, nil
 }
 
-// dunk takes the new key and puts (dunks) it into the Amazon S3 bucket; three points, field goal, touchdown!
-func dunk(payload key) error {
+// dunk takes the new token and puts (dunks) it into the Amazon S3 bucket; three points, field goal, touchdown!
+func dunk(payload token) error {
 	filename := "bearer-token.json"
 
 	bytes, err := json.Marshal(payload)
