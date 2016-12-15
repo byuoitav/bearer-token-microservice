@@ -31,28 +31,18 @@ func main() {
 
 	job := cron.New()
 
-	job.AddFunc("@hourly", func() { // Generate a new token each hour
-		log.Printf("Running scheduled token generation")
-
-		token, err := generateKey()
+	job.AddFunc("@hourly", func() {
+		err := doTheThing()
 		if err != nil {
-			log.Printf("ERROR: " + err.Error())
-			return
+			log.Println(err.Error())
 		}
-
-		log.Printf("Dunking token into S3 bucket")
-		err = dunk(token)
-		if err != nil {
-			log.Printf("ERROR: " + err.Error())
-			return
-		}
-
-		log.Printf("GET DUNKED ON")
 	})
 
 	job.Start()
 
 	log.Printf("Job scheduled")
+
+	doTheThing() // Generate a new token each time we start the program
 
 	server := http.Server{
 		Addr:           port,
@@ -62,8 +52,27 @@ func main() {
 	router.StartServer(&server)
 }
 
-// generateKey...generates...a new token...um...duh...
-func generateKey() (token, error) {
+func doTheThing() error {
+	log.Printf("Generating token")
+
+	token, err := generateToken()
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Dunking token into S3 bucket")
+	err = dunk(token)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("GET DUNKED ON")
+
+	return nil
+}
+
+// generateToken...generates...a new token...um...duh...
+func generateToken() (token, error) {
 	bytes := make([]byte, 1024)
 
 	_, err := rand.Read(bytes)
