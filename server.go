@@ -82,7 +82,7 @@ func dunk(payload token) error {
 	}
 
 	svc := s3.New(session.New(), &aws.Config{Region: aws.String("us-west-2")})
-	response, err := svc.PutObject(&s3.PutObjectInput{
+	_, err = svc.PutObject(&s3.PutObjectInput{
 		Bucket: aws.String("elasticbeanstalk-us-west-2-194925301021"),
 		Key:    aws.String("bearer-token.json"),
 		Body:   bytes.NewReader(payloadBytes),
