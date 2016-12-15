@@ -76,7 +76,6 @@ func generateKey() (token, error) {
 
 // dunk takes the new token and puts (dunks) it into the Amazon S3 bucket; three points, field goal, touchdown!
 func dunk(payload token) error {
-
 	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
 		return err
@@ -93,13 +92,5 @@ func dunk(payload token) error {
 		return err
 	}
 
-	log.Printf("%+v", response.GoString())
-	/*
-		frickinArguments := []string{"s3", "cp", filename, os.Getenv("AWS_BUCKET_ADDRESS")}
-		err = exec.Command("aws", frickinArguments...).Run()
-		if err != nil {
-			return err
-		}
-	*/
 	return nil
 }
