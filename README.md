@@ -1,4 +1,6 @@
 # bearer-token-microservice
+[![CircleCI](https://img.shields.io/circleci/project/byuoitav/bearer-token-microservice.svg)](https://circleci.com/gh/byuoitav/bearer-token-microservice) [![Apache 2 License](https://img.shields.io/hexpm/l/plug.svg)](https://raw.githubusercontent.com/byuoitav/bearer-token-microservice/master/LICENSE)
+
 A microservice for generating bearer tokens that enable inter-service communication in the AV API
 
 ## Setup
