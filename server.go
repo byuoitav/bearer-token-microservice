@@ -73,7 +73,7 @@ func doTheThing() error {
 
 // generateToken...generates...a new token...um...duh...
 func generateToken() (token, error) {
-	bytes := make([]byte, 1024)
+	bytes := make([]byte, 512)
 
 	_, err := rand.Read(bytes)
 	if err != nil {
